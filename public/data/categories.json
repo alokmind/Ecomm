@@ -1,0 +1,50 @@
+[
+  {
+    "uniqueCategoryID": "c1",
+    "categoryName": "Fruits & Vegetables",
+    "categoryTag": "fruits",
+    "discountPercent": 5
+  },
+  {
+    "uniqueCategoryID": "c2",
+    "categoryName": "Meat & Eggs",
+    "categoryTag": "meat",
+    "discountPercent": 8
+  },
+  {
+    "uniqueCategoryID": "c3",
+    "categoryName": "Aata, Rice & Grains",
+    "categoryTag": "grains",
+    "discountPercent": 10
+  },
+  {
+    "uniqueCategoryID": "c4",
+    "categoryName": "Dairy & Breads",
+    "categoryTag": "dairy",
+    "discountPercent": 5
+  },
+  {
+    "uniqueCategoryID": "c5",
+    "categoryName": "Packaged Food",
+    "categoryTag": "packaged",
+    "discountPercent": 12
+  },
+  {
+    "uniqueCategoryID": "c6",
+    "categoryName": "Snacks",
+    "categoryTag": "snacks",
+    "discountPercent": 15
+  },
+  {
+    "uniqueCategoryID": "c7",
+    "categoryName": "Masalas",
+    "categoryTag": "masalas",
+    "discountPercent": 7
+  },
+  {
+    "uniqueCategoryID": "c8",
+    "categoryName": "Frozen Foods",
+    "categoryTag": "frozen",
+    "discountPercent": 10
+  }
+]
