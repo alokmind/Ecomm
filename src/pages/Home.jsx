@@ -1,24 +1,27 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../redux/slices/userSlice';
 import { clearCart } from '../redux/slices/cartSlice';
-import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useNavigate, useLocation, Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { fetchProductsAndCategories, setSearchTerm, setSelectedCategoryID } from '../redux/slices/productsSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 
 import CategoryList from '../components/CategoryList';
-import ProductTile from '../components/ProductTile';
-import Cart from '../components/Cart';
+import ProductsView from '../components/ProductsView';
+import CartView from '../components/CartView';
 
 function Home() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [showCart, setShowCart] = useState(false);
+  const location = useLocation();
   
   const name = useSelector((state) => state.user.name);
-  const { items, categories, selectedCategoryID, searchTerm, status } = useSelector((state) => state.products);
+  const { items, searchTerm } = useSelector((state) => state.products);
   const { totalQuantity } = useSelector((state) => state.cart);
+
+  // Check if current route is cart
+  const isCartRoute = location.pathname.includes('/home/cart');
 
   useEffect(() => {
     dispatch(fetchProductsAndCategories());
@@ -61,20 +64,12 @@ function Home() {
   };
 
   const handleCartClick = () => {
-    setShowCart(true);
+    navigate('/home/cart');
   };
 
   const handleCategoryClick = () => {
-    setShowCart(false);
+    navigate('/home/products');
   };
-
-  const filteredProducts = items.filter((product) => {
-    const matchCategory =
-      selectedCategoryID === 'all' || product.uniqueCategoryID === selectedCategoryID;
-
-    const matchSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchCategory && matchSearch;
-  });
 
   return (
     <div style={styles.container}>
@@ -89,7 +84,7 @@ function Home() {
             <b>Welcome, {name}!</b>
           </div>
           <div style={styles.rightSection}>
-            {!showCart && (
+            {!isCartRoute && (
               <input
                 type="text"
                 placeholder="Search products..."
@@ -108,18 +103,11 @@ function Home() {
           </div>
         </div>
 
-        {status === 'loading' && <p>Loading...</p>}
-        {status === 'failed' && <p>Failed to load data.</p>}
-
-        {showCart ? (
-          <Cart />
-        ) : (
-          <div style={styles.productsGrid}>
-            {filteredProducts.map((product) => (
-              <ProductTile key={product.uniqueItemId} product={product} />
-            ))}
-          </div>
-        )}
+        <Routes>
+          <Route path="/" element={<Navigate to="/home/products" replace />} />
+          <Route path="/products" element={<ProductsView />} />
+          <Route path="/cart" element={<CartView />} />
+        </Routes>
       </div>
     </div>
   );
@@ -192,11 +180,6 @@ const styles = {
     justifyContent: 'center',
     fontSize: '12px',
     fontWeight: 'bold',
-  },
-  productsGrid: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: '1rem',
   },
 };
 
