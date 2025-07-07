@@ -66,6 +66,9 @@ function ProductTile({ product }) {
       <div style={styles.priceCartContainer}>
         <div style={styles.priceSection}>
           <p style={styles.mrp}>MRP: ₹{product.MRP}</p>
+          {product.discountPercent > 0 && (
+            <p style={styles.discountPercent}>{product.discountPercent}% OFF</p>
+          )}
           <p style={styles.discountedPrice}>Price: ₹{discountedPrice.toFixed(2)}</p>
         </div>
         
@@ -149,10 +152,20 @@ const styles = {
     textDecoration: 'line-through',
   },
   discountedPrice: {
-    margin: 0,
+    margin: '0 0 0.25rem 0',
     fontSize: '14px',
     fontWeight: 'bold',
     color: '#2c5530',
+  },
+  discountPercent: {
+    margin: 0,
+    fontSize: '12px',
+    fontWeight: 'bold',
+    color: '#dc3545',
+    backgroundColor: '#ffe6e6',
+    padding: '2px 6px',
+    borderRadius: '4px',
+    border: '1px solid #ffcccc',
   },
   cartButton: {
     backgroundColor: '#007bff',

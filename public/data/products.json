@@ -5,7 +5,7 @@
     "image": "/assets/sampleProduct.jpg",
     "description": "Tasty and fresh bajra",
     "MRP": 485,
-    "discountPercent": 0,
+    "discountPercent": 2,
     "rating": 3.6,
     "categoryTag": "aata, rice & grains",
     "uniqueCategoryID": "c3"
@@ -115,7 +115,7 @@
     "image": "/assets/sampleProduct.jpg",
     "description": "Tasty and fresh frozen mixed veggies",
     "MRP": 233,
-    "discountPercent": 0,
+    "discountPercent": 2,
     "rating": 3.9,
     "categoryTag": "frozen foods",
     "uniqueCategoryID": "c8"
@@ -148,7 +148,7 @@
     "image": "/assets/sampleProduct.jpg",
     "description": "Tasty and fresh chili powder",
     "MRP": 303,
-    "discountPercent": 0,
+    "discountPercent": 2,
     "rating": 4.6,
     "categoryTag": "masalas",
     "uniqueCategoryID": "c7"
@@ -181,7 +181,7 @@
     "image": "/assets/sampleProduct.jpg",
     "description": "Tasty and fresh duck eggs",
     "MRP": 358,
-    "discountPercent": 0,
+    "discountPercent": 2,
     "rating": 3.7,
     "categoryTag": "meat & eggs",
     "uniqueCategoryID": "c2"
@@ -192,7 +192,7 @@
     "image": "/assets/sampleProduct.jpg",
     "description": "Tasty and fresh pasta pack",
     "MRP": 250,
-    "discountPercent": 0,
+    "discountPercent": 2,
     "rating": 4.1,
     "categoryTag": "packaged food",
     "uniqueCategoryID": "c5"
@@ -214,7 +214,7 @@
     "image": "/assets/sampleProduct.jpg",
     "description": "Tasty and fresh chicken breast",
     "MRP": 70,
-    "discountPercent": 0,
+    "discountPercent": 2,
     "rating": 4.1,
     "categoryTag": "meat & eggs",
     "uniqueCategoryID": "c2"
@@ -467,7 +467,7 @@
     "image": "/assets/sampleProduct.jpg",
     "description": "Tasty and fresh corn flour",
     "MRP": 143,
-    "discountPercent": 0,
+    "discountPercent": 2,
     "rating": 4.1,
     "categoryTag": "aata, rice & grains",
     "uniqueCategoryID": "c3"
@@ -511,7 +511,7 @@
     "image": "/assets/sampleProduct.jpg",
     "description": "Tasty and fresh mustard seeds",
     "MRP": 95,
-    "discountPercent": 0,
+    "discountPercent": 2,
     "rating": 4.9,
     "categoryTag": "masalas",
     "uniqueCategoryID": "c7"
