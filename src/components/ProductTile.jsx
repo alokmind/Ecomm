@@ -3,6 +3,7 @@ import { faShoppingCart, faPlus, faMinus, faStar } from '@fortawesome/free-solid
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { addToCart, updateQuantity } from '../redux/slices/cartSlice';
+import { useEffect } from 'react';
 
 function ProductTile({ product }) {
   const dispatch = useDispatch();
@@ -15,6 +16,79 @@ function ProductTile({ product }) {
   const cartItem = cartItems.find(item => item.uniqueItemId === product.uniqueItemId);
   const isInCart = !!cartItem;
   const quantity = cartItem ? cartItem.quantity : 0;
+
+  // Add CSS for hover effects when component mounts
+  useEffect(() => {
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = `
+      .product-image-container {
+        position: relative;
+        margin-bottom: 0.5rem;
+        border-radius: 4px;
+        overflow: hidden;
+        cursor: pointer;
+      }
+      
+      .product-tile-image {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: block;
+        pointer-events: auto;
+      }
+      
+      .product-image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 123, 255, 0.85);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        border-radius: 4px;
+        pointer-events: none;
+      }
+      
+      .product-image-container:hover .product-tile-image {
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+      }
+      
+      .product-image-container:hover .product-image-overlay {
+        opacity: 1;
+      }
+      
+      .product-tile:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      }
+      
+      .product-image-container:active .product-tile-image {
+        transform: scale(0.98);
+      }
+    `;
+    
+    // Check if style already exists to avoid duplicates
+    if (!document.querySelector('#product-tile-hover-styles')) {
+      styleSheet.id = 'product-tile-hover-styles';
+      document.head.appendChild(styleSheet);
+    }
+    
+    // Cleanup function to remove styles when component unmounts
+    return () => {
+      const existingStyle = document.querySelector('#product-tile-hover-styles');
+      if (existingStyle) {
+        existingStyle.remove();
+      }
+    };
+  }, []);
 
   const handleAddToCart = () => {
     dispatch(addToCart(product));
@@ -33,8 +107,20 @@ function ProductTile({ product }) {
   };
 
   // Handle image click to navigate to product detail
-  const handleImageClick = () => {
-    navigate(`/home/product/${product.uniqueItemId}`);
+  const handleImageClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    console.log('Product tile image clicked! Product ID:', product.uniqueItemId);
+    console.log('Navigating to:', `/home/product/${product.uniqueItemId}`);
+    
+    try {
+      navigate(`/home/product/${product.uniqueItemId}`);
+      console.log('Navigation successful');
+    } catch (error) {
+      console.error('Navigation error:', error);
+      // Fallback to direct product route if nested route fails
+      navigate(`/product/${product.uniqueItemId}`);
+    }
   };
 
   // Function to render star rating
@@ -66,13 +152,24 @@ function ProductTile({ product }) {
   };
 
   return (
-    <div style={styles.tile}>
-      <img 
-        src={product.image} 
-        alt={product.name} 
-        style={styles.image} 
+    <div style={styles.tile} className="product-tile">
+      <div 
+        className="product-image-container"
         onClick={handleImageClick}
-      />
+      >
+        <img 
+          src={product.image} 
+          alt={product.name} 
+          className="product-tile-image"
+          onError={(e) => {
+            console.log('Image load error:', e);
+            e.target.src = 'https://via.placeholder.com/200x150?text=No+Image';
+          }}
+        />
+        <div className="product-image-overlay">
+          <span style={styles.overlayText}>View Details</span>
+        </div>
+      </div>
       <h3 style={styles.productName}>{product.name}</h3>
       
       <div style={styles.priceCartContainer}>
@@ -131,14 +228,12 @@ const styles = {
     boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
     transition: 'transform 0.2s ease, box-shadow 0.2s ease',
   },
-  image: {
-    width: '100%',
-    height: '150px',
-    objectFit: 'cover',
-    marginBottom: '0.5rem',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    transition: 'transform 0.2s ease',
+  overlayText: {
+    color: 'white',
+    fontSize: '14px',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    textShadow: '0 1px 2px rgba(0,0,0,0.3)',
   },
   productName: {
     margin: '0.5rem 0',

@@ -3,11 +3,80 @@ import { useNavigate } from 'react-router-dom';
 import { removeFromCart, updateQuantity, clearCart } from '../redux/slices/cartSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { useEffect } from 'react';
 
 function Cart() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { items, totalQuantity, totalAmount } = useSelector((state) => state.cart);
+
+  // Add CSS for hover effects when component mounts
+  useEffect(() => {
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = `
+      .cart-image-container {
+        position: relative;
+        margin-right: 1rem;
+        border-radius: 4px;
+        overflow: hidden;
+        cursor: pointer;
+      }
+      
+      .cart-item-image {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: block;
+        pointer-events: auto;
+      }
+      
+      .cart-image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 123, 255, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        border-radius: 4px;
+        pointer-events: none;
+      }
+      
+      .cart-image-container:hover .cart-item-image {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      }
+      
+      .cart-image-container:hover .cart-image-overlay {
+        opacity: 1;
+      }
+      
+      .cart-image-container:active .cart-item-image {
+        transform: scale(0.98);
+      }
+    `;
+    
+    // Check if style already exists to avoid duplicates
+    if (!document.querySelector('#cart-hover-styles')) {
+      styleSheet.id = 'cart-hover-styles';
+      document.head.appendChild(styleSheet);
+    }
+    
+    // Cleanup function to remove styles when component unmounts
+    return () => {
+      const existingStyle = document.querySelector('#cart-hover-styles');
+      if (existingStyle) {
+        existingStyle.remove();
+      }
+    };
+  }, []);
 
   const handleRemoveFromCart = (productId) => {
     dispatch(removeFromCart(productId));
@@ -23,9 +92,21 @@ function Cart() {
     }
   };
 
-  // Handle image click to navigate to product detail - Updated to use nested route
-  const handleImageClick = (productId) => {
-    navigate(`/home/product/${productId}`);
+  // Handle image click to navigate to product detail
+  const handleImageClick = (productId, event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    console.log('Image clicked! Product ID:', productId);
+    console.log('Navigating to:', `/home/product/${productId}`);
+    
+    try {
+      navigate(`/home/product/${productId}`);
+      console.log('Navigation successful');
+    } catch (error) {
+      console.error('Navigation error:', error);
+      // Fallback to direct product route if nested route fails
+      navigate(`/product/${productId}`);
+    }
   };
 
   if (items.length === 0) {
@@ -49,12 +130,23 @@ function Cart() {
       <div style={styles.cartItems}>
         {items.map((item) => (
           <div key={item.uniqueItemId} style={styles.cartItem}>
-            <img 
-              src={item.image} 
-              alt={item.name} 
-              style={styles.itemImage} 
-              onClick={() => handleImageClick(item.uniqueItemId)}
-            />
+            <div 
+              className="cart-image-container"
+              onClick={(e) => handleImageClick(item.uniqueItemId, e)}
+            >
+              <img 
+                src={item.image} 
+                alt={item.name} 
+                className="cart-item-image"
+                onError={(e) => {
+                  console.log('Image load error:', e);
+                  e.target.src = 'https://via.placeholder.com/80x80?text=No+Image';
+                }}
+              />
+              <div className="cart-image-overlay">
+                <span style={styles.overlayText}>View Details</span>
+              </div>
+            </div>
             
             <div style={styles.itemDetails}>
               <h3 style={styles.itemName}>{item.name}</h3>
@@ -113,7 +205,7 @@ function Cart() {
 const styles = {
   cartContainer: {
     padding: '1rem',
-    maxWidth: '800px',
+    maxWidth: '1000px',
     margin: '0 auto',
   },
   cartHeader: {
@@ -149,16 +241,13 @@ const styles = {
     marginBottom: '1rem',
     backgroundColor: '#fff',
     boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-    minWidth: '700px',
+    minWidth: '900px',
   },
-  itemImage: {
-    width: '80px',
-    height: '80px',
-    objectFit: 'cover',
-    borderRadius: '4px',
-    marginRight: '1rem',
-    cursor: 'pointer',
-    transition: 'transform 0.2s ease',
+  overlayText: {
+    color: 'white',
+    fontSize: '12px',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   itemDetails: {
     flex: 1,
@@ -199,6 +288,18 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
   },
+  removeButton: {
+    backgroundColor: '#dc3545',
+    color: 'white',
+    border: 'none',
+    width: '30px',
+    height: '30px',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   quantity: {
     margin: '0 0.5rem',
     fontSize: '16px',
@@ -217,18 +318,6 @@ const styles = {
     fontSize: '16px',
     fontWeight: 'bold',
     color: '#2c5530',
-  },
-  removeButton: {
-    backgroundColor: '#dc3545',
-    color: 'white',
-    border: 'none',
-    width: '30px',
-    height: '30px',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   cartSummary: {
     backgroundColor: '#f8f9fa',
