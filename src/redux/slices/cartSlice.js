@@ -87,6 +87,8 @@ const cartSlice = createSlice({
       state.items = [];
       state.totalQuantity = 0;
       state.totalAmount = 0;
+      
+      // Clear from localStorage
       localStorage.removeItem('cart');
     },
   },

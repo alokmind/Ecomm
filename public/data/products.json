@@ -56,9 +56,9 @@
   },
   {
     "uniqueItemId": "p6",
-    "name": "Turkey Meat",
-    "image": "/assets/turkey_meat.jpg",
-    "description": "Tasty and fresh turkey meat",
+    "name": "Mutton",
+    "image": "/assets/mutton.jpg",
+    "description": "Tasty and fresh mutton",
     "MRP": 379,
     "discountPercent": 5,
     "rating": 3.5,
@@ -78,7 +78,7 @@
   },
   {
     "uniqueItemId": "p8",
-    "name": "Canned Beans",
+    "name": "Canned Beans Premium",
     "image": "/assets/canned_beans.jpg",
     "description": "Tasty and fresh canned beans",
     "MRP": 259,
@@ -232,9 +232,9 @@
   },
   {
     "uniqueItemId": "p22",
-    "name": "Corn Flour",
-    "image": "/assets/corn_flour.jpg",
-    "description": "Tasty and fresh corn flour",
+    "name": "Rice Flour",
+    "image": "/assets/rice_flour.jpg",
+    "description": "Tasty and fresh rice flour",
     "MRP": 354,
     "discountPercent": 15,
     "rating": 4.0,
@@ -243,7 +243,7 @@
   },
   {
     "uniqueItemId": "p23",
-    "name": "Prawns",
+    "name": "Prawns Large",
     "image": "/assets/prawns.jpg",
     "description": "Tasty and fresh prawns",
     "MRP": 173,
@@ -254,7 +254,7 @@
   },
   {
     "uniqueItemId": "p24",
-    "name": "Milk",
+    "name": "Milk Premium",
     "image": "/assets/milk.jpg",
     "description": "Tasty and fresh milk",
     "MRP": 323,
@@ -287,7 +287,7 @@
   },
   {
     "uniqueItemId": "p27",
-    "name": "Cloves",
+    "name": "Cloves Premium",
     "image": "/assets/cloves.jpg",
     "description": "Tasty and fresh cloves",
     "MRP": 273,
@@ -298,7 +298,7 @@
   },
   {
     "uniqueItemId": "p28",
-    "name": "Corn Flour",
+    "name": "Corn Flour Premium",
     "image": "/assets/corn_flour.jpg",
     "description": "Tasty and fresh corn flour",
     "MRP": 253,
@@ -320,7 +320,7 @@
   },
   {
     "uniqueItemId": "p30",
-    "name": "Frozen Paneer",
+    "name": "Frozen Paneer Cubes",
     "image": "/assets/frozen_paneer.jpg",
     "description": "Tasty and fresh frozen paneer",
     "MRP": 476,
@@ -342,7 +342,7 @@
   },
   {
     "uniqueItemId": "p32",
-    "name": "Peanut Butter",
+    "name": "Peanut Butter Crunchy",
     "image": "/assets/peanut_butter.jpg",
     "description": "Tasty and fresh peanut butter",
     "MRP": 487,
@@ -353,7 +353,7 @@
   },
   {
     "uniqueItemId": "p33",
-    "name": "Prawns",
+    "name": "Prawns Jumbo",
     "image": "/assets/prawns.jpg",
     "description": "Tasty and fresh prawns",
     "MRP": 304,
@@ -496,9 +496,9 @@
   },
   {
     "uniqueItemId": "p46",
-    "name": "Carrots",
-    "image": "/assets/carrots.jpg",
-    "description": "Tasty and fresh carrots",
+    "name": "Brinjal",
+    "image": "/assets/Brinjal.jpg",
+    "description": "Tasty and fresh Brinjal",
     "MRP": 117,
     "discountPercent": 10,
     "rating": 5.0,
@@ -518,9 +518,9 @@
   },
   {
     "uniqueItemId": "p48",
-    "name": "Carrots",
-    "image": "/assets/carrots.jpg",
-    "description": "Tasty and fresh carrots",
+    "name": "Oranges",
+    "image": "/assets/oranges.jpg",
+    "description": "Tasty and fresh oranges",
     "MRP": 312,
     "discountPercent": 10,
     "rating": 4.9,

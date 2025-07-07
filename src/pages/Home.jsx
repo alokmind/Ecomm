@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../redux/slices/userSlice';
+import { clearCart } from '../redux/slices/cartSlice';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { fetchProductsAndCategories, setSearchTerm, setSelectedCategoryID } from '../redux/slices/productsSlice';
@@ -30,7 +31,11 @@ function Home() {
   }, [name, navigate]);
 
   const handleLogout = () => {
+    // Clear cart from Redux state and localStorage
+    dispatch(clearCart());
+    // Clear user data
     dispatch(logout());
+    // Navigate to login page
     navigate('/');
   };
 
