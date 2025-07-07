@@ -34,7 +34,7 @@ function ProductTile({ product }) {
 
   // Handle image click to navigate to product detail
   const handleImageClick = () => {
-    navigate(`/product/${product.uniqueItemId}`);
+    navigate(`/home/product/${product.uniqueItemId}`);
   };
 
   // Function to render star rating

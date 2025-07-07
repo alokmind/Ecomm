@@ -4,7 +4,6 @@ import { store } from './redux/store';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import Cart from './components/Cart';
-import ProductDetail from './components/ProductDetail';
 
 function App() {
   return (
@@ -13,8 +12,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/home/*" element={<Home />} />
-           <Route path="/cart" element={<Cart />} />
-          <Route path="/product/:productId" element={<ProductDetail />} />
+          <Route path="/cart" element={<Cart />} />
         </Routes>
       </Router>
     </Provider>

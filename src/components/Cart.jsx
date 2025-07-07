@@ -23,9 +23,9 @@ function Cart() {
     }
   };
 
-  // Handle image click to navigate to product detail
+  // Handle image click to navigate to product detail - Updated to use nested route
   const handleImageClick = (productId) => {
-    navigate(`/product/${productId}`);
+    navigate(`/home/product/${productId}`);
   };
 
   if (items.length === 0) {

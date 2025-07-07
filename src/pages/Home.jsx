@@ -10,6 +10,7 @@ import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import CategoryList from '../components/CategoryList';
 import ProductsView from '../components/ProductsView';
 import CartView from '../components/CartView';
+import ProductDetail from '../components/ProductDetail';
 
 function Home() {
   const dispatch = useDispatch();
@@ -20,8 +21,9 @@ function Home() {
   const { items, searchTerm } = useSelector((state) => state.products);
   const { totalQuantity } = useSelector((state) => state.cart);
 
-  // Check if current route is cart
+  // Check if current route is cart or product detail
   const isCartRoute = location.pathname.includes('/home/cart');
+  const isProductDetailRoute = location.pathname.includes('/home/product/');
 
   useEffect(() => {
     dispatch(fetchProductsAndCategories());
@@ -84,7 +86,7 @@ function Home() {
             <b>Welcome, {name}!</b>
           </div>
           <div style={styles.rightSection}>
-            {!isCartRoute && (
+            {!isCartRoute && !isProductDetailRoute && (
               <input
                 type="text"
                 placeholder="Search products..."
@@ -107,6 +109,7 @@ function Home() {
           <Route path="/" element={<Navigate to="/home/products" replace />} />
           <Route path="/products" element={<ProductsView />} />
           <Route path="/cart" element={<CartView />} />
+          <Route path="/product/:productId" element={<ProductDetail />} />
         </Routes>
       </div>
     </div>
