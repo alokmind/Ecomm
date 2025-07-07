@@ -1,14 +1,19 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { removeFromCart, updateQuantity, clearCart } from '../redux/slices/cartSlice';
+import { removeFromCart, updateQuantity, clearCart, loadDiscounts } from '../redux/slices/cartSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faMinus, faPlus, faTag } from '@fortawesome/free-solid-svg-icons';
 import { useEffect } from 'react';
 
 function Cart() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { items, totalQuantity, totalAmount } = useSelector((state) => state.cart);
+  const { items, totalQuantity, subtotal, discount, totalAmount } = useSelector((state) => state.cart);
+
+  // Load discounts when component mounts
+  useEffect(() => {
+    dispatch(loadDiscounts());
+  }, [dispatch]);
 
   // Add CSS for hover effects when component mounts
   useEffect(() => {
@@ -60,6 +65,16 @@ function Cart() {
       
       .cart-image-container:active .cart-item-image {
         transform: scale(0.98);
+      }
+
+      .discount-badge {
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
       }
     `;
     
@@ -127,6 +142,17 @@ function Cart() {
         </button>
       </div>
 
+      {/* Discount Information Banner */}
+      {discount.percentage > 0 && (
+        <div style={styles.discountBanner} className="discount-badge">
+          <FontAwesomeIcon icon={faTag} style={styles.discountIcon} />
+          <span style={styles.discountText}>
+            🎉 Great! You're saving {discount.percentage}% on your order! 
+            Discount: ₹{discount.discountAmount.toFixed(2)}
+          </span>
+        </div>
+      )}
+
       <div style={styles.cartItems}>
         {items.map((item) => (
           <div key={item.uniqueItemId} style={styles.cartItem}>
@@ -191,9 +217,42 @@ function Cart() {
           <span style={styles.summaryValue}>{totalQuantity}</span>
         </div>
         <div style={styles.summaryRow}>
+          <span style={styles.summaryLabel}>Subtotal:</span>
+          <span style={styles.summaryValue}>₹{subtotal.toFixed(2)}</span>
+        </div>
+        
+        {discount.percentage > 0 && (
+          <div style={styles.discountRow}>
+            <span style={styles.discountLabel}>
+              <FontAwesomeIcon icon={faTag} style={styles.smallDiscountIcon} />
+              Cart Discount ({discount.percentage}%):
+            </span>
+            <span style={styles.discountValue}>-₹{discount.discountAmount.toFixed(2)}</span>
+          </div>
+        )}
+        
+        <div style={styles.summaryRow}>
           <span style={styles.summaryLabel}>Total Amount:</span>
           <span style={styles.summaryTotal}>₹{totalAmount.toFixed(2)}</span>
         </div>
+        
+        {/* Show next discount tier if applicable */}
+        {discount.percentage === 0 && subtotal > 0 && (
+          <div style={styles.nextDiscountInfo}>
+            <p style={styles.nextDiscountText}>
+              💡 Add ₹{(1000 - subtotal).toFixed(2)} more to get 5% discount!
+            </p>
+          </div>
+        )}
+        
+        {discount.percentage > 0 && discount.percentage < 20 && (
+          <div style={styles.nextDiscountInfo}>
+            <p style={styles.nextDiscountText}>
+              💡 Add more items to unlock higher discounts (up to 20% off)!
+            </p>
+          </div>
+        )}
+        
         <button style={styles.checkoutButton}>
           Proceed to Checkout
         </button>
@@ -223,6 +282,25 @@ const styles = {
     padding: '0.5rem 1rem',
     borderRadius: '4px',
     cursor: 'pointer',
+  },
+  discountBanner: {
+    backgroundColor: '#d4edda',
+    border: '1px solid #c3e6cb',
+    borderRadius: '8px',
+    padding: '1rem',
+    marginBottom: '1.5rem',
+    textAlign: 'center',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+  },
+  discountIcon: {
+    color: '#155724',
+    marginRight: '0.5rem',
+    fontSize: '1.2rem',
+  },
+  discountText: {
+    color: '#155724',
+    fontWeight: 'bold',
+    fontSize: '1.1rem',
   },
   emptyCart: {
     textAlign: 'center',
@@ -338,10 +416,47 @@ const styles = {
     fontSize: '16px',
     fontWeight: '600',
   },
+  discountRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginBottom: '0.5rem',
+    padding: '0.5rem',
+    backgroundColor: '#d4edda',
+    borderRadius: '4px',
+    border: '1px solid #c3e6cb',
+  },
+  discountLabel: {
+    fontSize: '16px',
+    color: '#155724',
+    fontWeight: 'bold',
+  },
+  discountValue: {
+    fontSize: '16px',
+    fontWeight: 'bold',
+    color: '#155724',
+  },
+  smallDiscountIcon: {
+    marginRight: '0.5rem',
+    color: '#155724',
+  },
   summaryTotal: {
     fontSize: '18px',
     fontWeight: 'bold',
     color: '#2c5530',
+  },
+  nextDiscountInfo: {
+    backgroundColor: '#fff3cd',
+    border: '1px solid #ffeaa7',
+    borderRadius: '4px',
+    padding: '0.75rem',
+    marginBottom: '1rem',
+    textAlign: 'center',
+  },
+  nextDiscountText: {
+    margin: 0,
+    fontSize: '14px',
+    color: '#856404',
+    fontWeight: '500',
   },
   checkoutButton: {
     width: '100%',
