@@ -1,14 +1,33 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
-import { useDispatch } from 'react-redux';
-import { addToCart } from '../redux/slices/cartSlice';
+import { faShoppingCart, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCart, updateQuantity } from '../redux/slices/cartSlice';
 
 function ProductTile({ product }) {
   const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.items);
+  
   const discountedPrice = product.MRP - (product.MRP * product.discountPercent) / 100;
+  
+  // Check if product is in cart and get its quantity
+  const cartItem = cartItems.find(item => item.uniqueItemId === product.uniqueItemId);
+  const isInCart = !!cartItem;
+  const quantity = cartItem ? cartItem.quantity : 0;
 
   const handleAddToCart = () => {
     dispatch(addToCart(product));
+  };
+
+  const handleIncreaseQuantity = () => {
+    dispatch(updateQuantity({ productId: product.uniqueItemId, quantity: quantity + 1 }));
+  };
+
+  const handleDecreaseQuantity = () => {
+    if (quantity > 1) {
+      dispatch(updateQuantity({ productId: product.uniqueItemId, quantity: quantity - 1 }));
+    } else {
+      dispatch(updateQuantity({ productId: product.uniqueItemId, quantity: 0 }));
+    }
   };
 
   return (
@@ -22,13 +41,33 @@ function ProductTile({ product }) {
           <p style={styles.discountedPrice}>Price: ₹{discountedPrice.toFixed(2)}</p>
         </div>
         
-        <button 
-          style={styles.cartButton}
-          onClick={handleAddToCart}
-          title="Add to Cart"
-        >
-          <FontAwesomeIcon icon={faShoppingCart} style={styles.cartIcon} />
-        </button>
+        {!isInCart ? (
+          <button 
+            style={styles.cartButton}
+            onClick={handleAddToCart}
+            title="Add to Cart"
+          >
+            <FontAwesomeIcon icon={faShoppingCart} style={styles.cartIcon} />
+          </button>
+        ) : (
+          <div style={styles.quantityControls}>
+            <button 
+              style={styles.minusButton}
+              onClick={handleDecreaseQuantity}
+              title="Decrease quantity"
+            >
+              <FontAwesomeIcon icon={faMinus} style={styles.quantityIcon} />
+            </button>
+            <span style={styles.quantityDisplay}>{quantity}</span>
+            <button 
+              style={styles.plusButton}
+              onClick={handleIncreaseQuantity}
+              title="Increase quantity"
+            >
+              <FontAwesomeIcon icon={faPlus} style={styles.quantityIcon} />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -99,6 +138,53 @@ const styles = {
   cartIcon: {
     color: 'white',
     fontSize: '16px',
+  },
+  quantityControls: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    backgroundColor: '#f8f9fa',
+    borderRadius: '20px',
+    padding: '4px',
+    border: '1px solid #dee2e6',
+  },
+  minusButton: {
+    backgroundColor: '#dc3545',
+    color: 'white',
+    border: 'none',
+    borderRadius: '50%',
+    width: '28px',
+    height: '28px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'background-color 0.2s ease',
+    fontSize: '12px',
+  },
+  plusButton: {
+    backgroundColor: '#28a745',
+    color: 'white',
+    border: 'none',
+    borderRadius: '50%',
+    width: '28px',
+    height: '28px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'background-color 0.2s ease',
+    fontSize: '12px',
+  },
+  quantityIcon: {
+    fontSize: '10px',
+  },
+  quantityDisplay: {
+    minWidth: '20px',
+    textAlign: 'center',
+    fontSize: '14px',
+    fontWeight: 'bold',
+    color: '#333',
   },
 };
 
