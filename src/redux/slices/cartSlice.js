@@ -51,19 +51,37 @@ const calculateDiscount = (cartValue, discounts) => {
   };
 };
 
-// Function to recalculate cart totals with discount
+// Function to recalculate cart totals with all savings
 const recalculateCartTotals = (items, discounts = []) => {
+  // Calculate original MRP total (without any discounts)
+  const originalMRPTotal = items.reduce((total, item) => total + (item.MRP * item.quantity), 0);
+  
+  // Calculate subtotal (with product discounts applied)
   const subtotal = items.reduce((total, item) => total + (item.discountedPrice * item.quantity), 0);
+  
+  // Calculate total product-level savings
+  const productSavings = originalMRPTotal - subtotal;
+  
+  // Calculate total quantity
   const totalQuantity = items.reduce((total, item) => total + item.quantity, 0);
   
-  const discount = calculateDiscount(subtotal, discounts);
-  const totalAmount = subtotal - discount.discountAmount;
+  // Calculate cart-level discount
+  const cartDiscount = calculateDiscount(subtotal, discounts);
+  
+  // Calculate final total amount
+  const totalAmount = subtotal - cartDiscount.discountAmount;
+  
+  // Calculate total savings (product + cart discounts)
+  const totalSavings = productSavings + cartDiscount.discountAmount;
   
   return {
     totalQuantity,
+    originalMRPTotal,
     subtotal,
-    discount,
-    totalAmount
+    productSavings,
+    cartDiscount,
+    totalAmount,
+    totalSavings
   };
 };
 
@@ -73,9 +91,12 @@ const initialTotals = recalculateCartTotals(initialCartItems);
 const initialState = {
   items: initialCartItems,
   totalQuantity: initialTotals.totalQuantity,
+  originalMRPTotal: initialTotals.originalMRPTotal,
   subtotal: initialTotals.subtotal,
-  discount: initialTotals.discount,
+  productSavings: initialTotals.productSavings,
+  cartDiscount: initialTotals.cartDiscount,
   totalAmount: initialTotals.totalAmount,
+  totalSavings: initialTotals.totalSavings,
   discounts: [], // Will be loaded asynchronously
 };
 
@@ -88,9 +109,12 @@ const cartSlice = createSlice({
       // Recalculate totals with new discounts
       const totals = recalculateCartTotals(state.items, state.discounts);
       state.totalQuantity = totals.totalQuantity;
+      state.originalMRPTotal = totals.originalMRPTotal;
       state.subtotal = totals.subtotal;
-      state.discount = totals.discount;
+      state.productSavings = totals.productSavings;
+      state.cartDiscount = totals.cartDiscount;
       state.totalAmount = totals.totalAmount;
+      state.totalSavings = totals.totalSavings;
     },
     addToCart: (state, action) => {
       const product = action.payload;
@@ -108,12 +132,15 @@ const cartSlice = createSlice({
         });
       }
       
-      // Recalculate totals with discount
+      // Recalculate totals with all savings
       const totals = recalculateCartTotals(state.items, state.discounts);
       state.totalQuantity = totals.totalQuantity;
+      state.originalMRPTotal = totals.originalMRPTotal;
       state.subtotal = totals.subtotal;
-      state.discount = totals.discount;
+      state.productSavings = totals.productSavings;
+      state.cartDiscount = totals.cartDiscount;
       state.totalAmount = totals.totalAmount;
+      state.totalSavings = totals.totalSavings;
       
       // Save to localStorage
       saveCartToStorage(state.items);
@@ -122,12 +149,15 @@ const cartSlice = createSlice({
       const productId = action.payload;
       state.items = state.items.filter(item => item.uniqueItemId !== productId);
       
-      // Recalculate totals with discount
+      // Recalculate totals with all savings
       const totals = recalculateCartTotals(state.items, state.discounts);
       state.totalQuantity = totals.totalQuantity;
+      state.originalMRPTotal = totals.originalMRPTotal;
       state.subtotal = totals.subtotal;
-      state.discount = totals.discount;
+      state.productSavings = totals.productSavings;
+      state.cartDiscount = totals.cartDiscount;
       state.totalAmount = totals.totalAmount;
+      state.totalSavings = totals.totalSavings;
       
       // Save to localStorage
       saveCartToStorage(state.items);
@@ -144,12 +174,15 @@ const cartSlice = createSlice({
         }
       }
       
-      // Recalculate totals with discount
+      // Recalculate totals with all savings
       const totals = recalculateCartTotals(state.items, state.discounts);
       state.totalQuantity = totals.totalQuantity;
+      state.originalMRPTotal = totals.originalMRPTotal;
       state.subtotal = totals.subtotal;
-      state.discount = totals.discount;
+      state.productSavings = totals.productSavings;
+      state.cartDiscount = totals.cartDiscount;
       state.totalAmount = totals.totalAmount;
+      state.totalSavings = totals.totalSavings;
       
       // Save to localStorage
       saveCartToStorage(state.items);
@@ -157,9 +190,12 @@ const cartSlice = createSlice({
     clearCart: (state) => {
       state.items = [];
       state.totalQuantity = 0;
+      state.originalMRPTotal = 0;
       state.subtotal = 0;
-      state.discount = { percentage: 0, minValue: 0, discountAmount: 0 };
+      state.productSavings = 0;
+      state.cartDiscount = { percentage: 0, minValue: 0, discountAmount: 0 };
       state.totalAmount = 0;
+      state.totalSavings = 0;
       
       // Clear localStorage
       localStorage.removeItem('cart');
