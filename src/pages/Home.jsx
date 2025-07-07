@@ -1,17 +1,23 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../redux/slices/userSlice';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { fetchProductsAndCategories, setSearchTerm, setSelectedCategoryID } from '../redux/slices/productsSlice';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 
 import CategoryList from '../components/CategoryList';
 import ProductTile from '../components/ProductTile';
+import Cart from '../components/Cart';
 
 function Home() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [showCart, setShowCart] = useState(false);
+  
   const name = useSelector((state) => state.user.name);
   const { items, categories, selectedCategoryID, searchTerm, status } = useSelector((state) => state.products);
+  const { totalQuantity } = useSelector((state) => state.cart);
 
   useEffect(() => {
     dispatch(fetchProductsAndCategories());
@@ -49,6 +55,14 @@ function Home() {
     }
   };
 
+  const handleCartClick = () => {
+    setShowCart(true);
+  };
+
+  const handleCategoryClick = () => {
+    setShowCart(false);
+  };
+
   const filteredProducts = items.filter((product) => {
     const matchCategory =
       selectedCategoryID === 'all' || product.uniqueCategoryID === selectedCategoryID;
@@ -60,34 +74,47 @@ function Home() {
   return (
     <div style={styles.container}>
       <div style={styles.sidebar}>
-        <CategoryList />
+        <div onClick={handleCategoryClick}>
+          <CategoryList />
+        </div>
       </div>
       <div style={styles.main}>
         <div style={styles.topBar}>
-
-            <div>
-                <b>Welcome, {name}!</b>
+          <div>
+            <b>Welcome, {name}!</b>
+          </div>
+          <div style={styles.rightSection}>
+            {!showCart && (
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={searchTerm}
+                onChange={handleSearch}
+                style={styles.searchInput}
+              />
+            )}
+            <div style={styles.cartIconContainer} onClick={handleCartClick}>
+              <FontAwesomeIcon icon={faShoppingCart} style={styles.cartIcon} />
+              {totalQuantity > 0 && (
+                <span style={styles.cartBadge}>{totalQuantity}</span>
+              )}
             </div>
-            <div>
-            <input
-            type="text"
-            placeholder="Search products..."
-            value={searchTerm}
-            onChange={handleSearch}
-            style={styles.searchInput}
-          />
-          <button onClick={handleLogout} style={styles.logoutButton}>Logout</button>
-            </div>
+            <button onClick={handleLogout} style={styles.logoutButton}>Logout</button>
+          </div>
         </div>
 
         {status === 'loading' && <p>Loading...</p>}
         {status === 'failed' && <p>Failed to load data.</p>}
 
-        <div style={styles.productsGrid}>
-          {filteredProducts.map((product) => (
-            <ProductTile key={product.uniqueItemId} product={product} />
-          ))}
-        </div>
+        {showCart ? (
+          <Cart />
+        ) : (
+          <div style={styles.productsGrid}>
+            {filteredProducts.map((product) => (
+              <ProductTile key={product.uniqueItemId} product={product} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -101,6 +128,7 @@ const styles = {
   sidebar: {
     width: '190px',
     borderRight: '1px solid #ccc',
+    cursor: 'pointer',
   },
   main: {
     flex: 1,
@@ -115,6 +143,11 @@ const styles = {
     marginBottom: '1rem',
     gap: '1rem',
   },
+  rightSection: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+  },
   logoutButton: {
     padding: '0.5rem 1rem',
     background: '#dc3545',
@@ -122,11 +155,38 @@ const styles = {
     border: 'none',
     borderRadius: '4px',
     cursor: 'pointer',
-    marginLeft: '10px',
   },
   searchInput: {
     padding: '0.5rem',
     width: '200px',
+    borderRadius: '4px',
+    border: '1px solid #ccc',
+  },
+  cartIconContainer: {
+    position: 'relative',
+    cursor: 'pointer',
+    padding: '0.5rem',
+    borderRadius: '4px',
+    transition: 'background-color 0.2s ease',
+  },
+  cartIcon: {
+    fontSize: '20px',
+    color: '#007bff',
+  },
+  cartBadge: {
+    position: 'absolute',
+    top: '-5px',
+    right: '-5px',
+    backgroundColor: '#dc3545',
+    color: 'white',
+    borderRadius: '50%',
+    width: '20px',
+    height: '20px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '12px',
+    fontWeight: 'bold',
   },
   productsGrid: {
     display: 'flex',

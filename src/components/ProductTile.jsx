@@ -1,12 +1,14 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../redux/slices/cartSlice';
 
 function ProductTile({ product }) {
+  const dispatch = useDispatch();
   const discountedPrice = product.MRP - (product.MRP * product.discountPercent) / 100;
 
   const handleAddToCart = () => {
-    // TODO: Implement add to cart functionality
-    console.log('Added to cart:', product);
+    dispatch(addToCart(product));
   };
 
   return (
