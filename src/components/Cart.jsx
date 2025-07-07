@@ -1,10 +1,12 @@
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { removeFromCart, updateQuantity, clearCart } from '../redux/slices/cartSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 function Cart() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { items, totalQuantity, totalAmount } = useSelector((state) => state.cart);
 
   const handleRemoveFromCart = (productId) => {
@@ -19,6 +21,11 @@ function Cart() {
     if (window.confirm('Are you sure you want to clear the cart?')) {
       dispatch(clearCart());
     }
+  };
+
+  // Handle image click to navigate to product detail
+  const handleImageClick = (productId) => {
+    navigate(`/product/${productId}`);
   };
 
   if (items.length === 0) {
@@ -42,7 +49,12 @@ function Cart() {
       <div style={styles.cartItems}>
         {items.map((item) => (
           <div key={item.uniqueItemId} style={styles.cartItem}>
-            <img src={item.image} alt={item.name} style={styles.itemImage} />
+            <img 
+              src={item.image} 
+              alt={item.name} 
+              style={styles.itemImage} 
+              onClick={() => handleImageClick(item.uniqueItemId)}
+            />
             
             <div style={styles.itemDetails}>
               <h3 style={styles.itemName}>{item.name}</h3>
@@ -144,6 +156,8 @@ const styles = {
     objectFit: 'cover',
     borderRadius: '4px',
     marginRight: '1rem',
+    cursor: 'pointer',
+    transition: 'transform 0.2s ease',
   },
   itemDetails: {
     flex: 1,

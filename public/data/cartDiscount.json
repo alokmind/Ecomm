@@ -1,0 +1,26 @@
+[
+    {
+        "minTotalCartValue": 1000,
+        "discountPercentage": 5
+    },
+    {
+        "minTotalCartValue": 2000,
+        "discountPercentage": 7
+    },
+    {
+        "minTotalCartValue": 2500,
+        "discountPercentage": 10
+    },
+    {
+        "minTotalCartValue": 3000,
+        "discountPercentage": 15
+    },
+    {
+        "minTotalCartValue": 4000,
+        "discountPercentage": 17
+    },
+    {
+        "minTotalCartValue": 5000,
+        "discountPercentage": 20
+    }
+]

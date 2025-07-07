@@ -1,10 +1,12 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart, faPlus, faMinus, faStar } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { addToCart, updateQuantity } from '../redux/slices/cartSlice';
 
 function ProductTile({ product }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const cartItems = useSelector((state) => state.cart.items);
   
   const discountedPrice = product.MRP - (product.MRP * product.discountPercent) / 100;
@@ -28,6 +30,11 @@ function ProductTile({ product }) {
     } else {
       dispatch(updateQuantity({ productId: product.uniqueItemId, quantity: 0 }));
     }
+  };
+
+  // Handle image click to navigate to product detail
+  const handleImageClick = () => {
+    navigate(`/product/${product.uniqueItemId}`);
   };
 
   // Function to render star rating
@@ -60,7 +67,12 @@ function ProductTile({ product }) {
 
   return (
     <div style={styles.tile}>
-      <img src={product.image} alt={product.name} style={styles.image} />
+      <img 
+        src={product.image} 
+        alt={product.name} 
+        style={styles.image} 
+        onClick={handleImageClick}
+      />
       <h3 style={styles.productName}>{product.name}</h3>
       
       <div style={styles.priceCartContainer}>
@@ -125,6 +137,8 @@ const styles = {
     objectFit: 'cover',
     marginBottom: '0.5rem',
     borderRadius: '4px',
+    cursor: 'pointer',
+    transition: 'transform 0.2s ease',
   },
   productName: {
     margin: '0.5rem 0',
