@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import { faShoppingCart, faPlus, faMinus, faStar } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart, updateQuantity } from '../redux/slices/cartSlice';
 
@@ -28,6 +28,34 @@ function ProductTile({ product }) {
     } else {
       dispatch(updateQuantity({ productId: product.uniqueItemId, quantity: 0 }));
     }
+  };
+
+  // Function to render star rating
+  const renderStarRating = (rating) => {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+    return (
+      <div style={styles.starRating}>
+        {/* Full stars */}
+        {[...Array(fullStars)].map((_, index) => (
+          <FontAwesomeIcon key={`full-${index}`} icon={faStar} style={styles.starFull} />
+        ))}
+        
+        {/* Half star */}
+        {hasHalfStar && (
+          <FontAwesomeIcon icon={faStar} style={styles.starHalf} />
+        )}
+        
+        {/* Empty stars */}
+        {[...Array(emptyStars)].map((_, index) => (
+          <FontAwesomeIcon key={`empty-${index}`} icon={faStar} style={styles.starEmpty} />
+        ))}
+        
+        <span style={styles.ratingText}>({product.rating})</span>
+      </div>
+    );
   };
 
   return (
@@ -68,6 +96,11 @@ function ProductTile({ product }) {
             </button>
           </div>
         )}
+      </div>
+      
+      {/* Rating section at the bottom */}
+      <div style={styles.ratingContainer}>
+        {renderStarRating(product.rating)}
       </div>
     </div>
   );
@@ -185,6 +218,36 @@ const styles = {
     fontSize: '14px',
     fontWeight: 'bold',
     color: '#333',
+  },
+  ratingContainer: {
+    marginTop: '0.75rem',
+    paddingTop: '0.5rem',
+    borderTop: '1px solid #eee',
+  },
+  starRating: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '2px',
+  },
+  starFull: {
+    color: '#ffc107',
+    fontSize: '14px',
+  },
+  starHalf: {
+    color: '#ffc107',
+    fontSize: '14px',
+    opacity: 0.5,
+  },
+  starEmpty: {
+    color: '#e9ecef',
+    fontSize: '14px',
+  },
+  ratingText: {
+    marginLeft: '6px',
+    fontSize: '12px',
+    color: '#666',
+    fontWeight: '500',
   },
 };
 
