@@ -64,6 +64,13 @@ function Cart() {
 
             <div style={styles.quantityControls}>
               <button
+                onClick={() => handleRemoveFromCart(item.uniqueItemId)}
+                style={styles.removeButton}
+                title="Remove from cart"
+              >
+                <FontAwesomeIcon icon={faTrash} />
+              </button>
+              <button
                 onClick={() => handleUpdateQuantity(item.uniqueItemId, item.quantity - 1)}
                 style={styles.quantityButton}
                 disabled={item.quantity <= 1}
@@ -81,13 +88,6 @@ function Cart() {
 
             <div style={styles.itemTotal}>
               <p style={styles.totalPrice}>₹{(item.discountedPrice * item.quantity).toFixed(2)}</p>
-              <button
-                onClick={() => handleRemoveFromCart(item.uniqueItemId)}
-                style={styles.removeButton}
-                title="Remove from cart"
-              >
-                <FontAwesomeIcon icon={faTrash} />
-              </button>
             </div>
           </div>
         ))}
@@ -143,12 +143,13 @@ const styles = {
   cartItem: {
     display: 'flex',
     alignItems: 'center',
-    padding: '1rem',
+    padding: '1.5rem',
     border: '1px solid #ddd',
     borderRadius: '8px',
     marginBottom: '1rem',
     backgroundColor: '#fff',
     boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    minWidth: '700px',
   },
   itemImage: {
     width: '80px',
@@ -161,7 +162,7 @@ const styles = {
   },
   itemDetails: {
     flex: 1,
-    marginRight: '1rem',
+    marginRight: '2rem',
   },
   itemName: {
     margin: '0 0 0.5rem 0',
@@ -183,7 +184,8 @@ const styles = {
   quantityControls: {
     display: 'flex',
     alignItems: 'center',
-    marginRight: '1rem',
+    marginRight: '2rem',
+    gap: '0.5rem',
   },
   quantityButton: {
     backgroundColor: '#007bff',
@@ -208,10 +210,10 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    minWidth: '100px',
+    minWidth: '120px',
   },
   totalPrice: {
-    margin: '0 0 0.5rem 0',
+    margin: 0,
     fontSize: '16px',
     fontWeight: 'bold',
     color: '#2c5530',
@@ -220,9 +222,13 @@ const styles = {
     backgroundColor: '#dc3545',
     color: 'white',
     border: 'none',
-    padding: '0.25rem 0.5rem',
+    width: '30px',
+    height: '30px',
     borderRadius: '4px',
     cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   cartSummary: {
     backgroundColor: '#f8f9fa',
