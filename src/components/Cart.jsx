@@ -229,7 +229,11 @@ function Cart() {
     // Mock API call
     await new Promise(resolve => setTimeout(resolve, 1000)); // simulate network delay
     console.log('Checkout API called with:', checkoutData);
-    alert('Checkout successful! Receipt downloaded.');
+
+    // Clear the cart after successful checkout
+    dispatch(clearCart());
+
+    alert('Checkout successful! Receipt downloaded and cart cleared.');
   };
 
   if (items.length === 0) {
