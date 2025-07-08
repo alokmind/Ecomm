@@ -4,6 +4,7 @@ import { removeFromCart, updateQuantity, clearCart, loadDiscounts } from '../red
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faMinus, faPlus, faTag, faPiggyBank, faGift } from '@fortawesome/free-solid-svg-icons';
 import { useEffect } from 'react';
+import jsPDF from 'jspdf';
 
 function Cart() {
   const dispatch = useDispatch();
@@ -18,6 +19,11 @@ function Cart() {
     totalAmount,
     totalSavings
   } = useSelector((state) => state.cart);
+
+  const name = useSelector((state) => state.user.name);
+  const cartItems = useSelector((state) => state.cart.items);
+  const total = useSelector((state) => state.cart.total);
+  const totalSaving = useSelector((state) => state.cart.totalSaving);
 
   // Load discounts when component mounts
   useEffect(() => {
@@ -141,6 +147,89 @@ function Cart() {
       // Fallback to direct product route if nested route fails
       navigate(`/product/${productId}`);
     }
+  };
+
+  const handleCheckout = async () => {
+    // Generate random receipt number and current date/time
+    const receiptNumber = 'RCPT-' + Math.floor(100000 + Math.random() * 900000);
+    const now = new Date();
+    const dateStr = now.toLocaleDateString();
+    const timeStr = now.toLocaleTimeString();
+
+    // 1. Generate PDF
+    const doc = new jsPDF();
+    let y = 12;
+
+    doc.setFontSize(16);
+    doc.text('Order Receipt', 10, y);
+    y += 8;
+    doc.setFontSize(11);
+    doc.text(`Receipt #: ${receiptNumber}`, 10, y);
+    doc.text(`Date: ${dateStr}`, 120, y);
+    y += 6;
+    doc.text(`Time: ${timeStr}`, 120, y);
+    y += 8;
+    doc.text(`Customer: ${name}`, 10, y);
+    y += 10;
+
+    // Table header
+    doc.setFontSize(11);
+    doc.setFillColor(220, 220, 220);
+    doc.rect(10, y - 4, 190, 8, 'F');
+    doc.text('No.', 12, y);
+    doc.text('Product', 24, y);
+    doc.text('Price', 100, y, { align: 'left' });      // Add left padding
+    doc.text('Discount', 120, y, { align: 'left' });   // Add left padding
+    doc.text('Qty', 145, y, { align: 'left' });
+    doc.text('Subtotal', 165, y, { align: 'left' });
+    y += 7;
+
+    // Table rows
+    cartItems.forEach((item, idx) => {
+      doc.text(String(idx + 1), 12, y);
+      doc.text(item.name, 24, y);
+      doc.text(item.discountedPrice.toFixed(2), 100, y, { align: 'left' }); // No ₹ symbol
+      doc.text(`${item.discountPercent || 0}%`, 120, y, { align: 'left' });
+      doc.text(String(item.quantity), 145, y, { align: 'left' });
+      doc.text((item.discountedPrice * item.quantity).toFixed(2), 165, y, { align: 'left' }); // No ₹ symbol
+      y += 7;
+      // Add page if needed
+      if (y > 270) {
+        doc.addPage();
+        y = 12;
+      }
+    });
+
+    y += 6;
+    doc.setFontSize(12);
+    doc.text(`Final Amount: ${totalAmount.toFixed(2)}`, 10, y); // No ₹ symbol
+    y += 8;
+    doc.text(`Total Saving: ${totalSavings.toFixed(2)}`, 10, y); // No ₹ symbol
+
+    doc.save('receipt.pdf');
+
+    // 2. Mock API POST call
+    const checkoutData = {
+      receiptNumber,
+      date: dateStr,
+      time: timeStr,
+      user: name,
+      items: cartItems.map(item => ({
+        id: item.uniqueItemId,
+        name: item.name,
+        price: item.discountedPrice,
+        discount: item.discountPercent,
+        quantity: item.quantity,
+        subtotal: item.discountedPrice * item.quantity,
+      })),
+      finalAmount: totalAmount,
+      totalSaving: totalSavings,
+    };
+
+    // Mock API call
+    await new Promise(resolve => setTimeout(resolve, 1000)); // simulate network delay
+    console.log('Checkout API called with:', checkoutData);
+    alert('Checkout successful! Receipt downloaded.');
   };
 
   if (items.length === 0) {
@@ -321,7 +410,7 @@ function Cart() {
           </div>
         )}
         
-        <button style={styles.checkoutButton}>
+        <button onClick={handleCheckout} style={styles.checkoutButton}>
           Proceed to Checkout
         </button>
       </div>
