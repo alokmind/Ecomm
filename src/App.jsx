@@ -6,6 +6,7 @@ import { store } from './redux/store';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import Cart from './components/Cart';
+import ProtectedLoginRoute from './components/ProtectedLoginRoute';
 
 function App() {
   const dispatch = useDispatch();
@@ -16,7 +17,22 @@ function App() {
     <Provider store={store}>
       <Router>
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedLoginRoute>
+                <Login />
+              </ProtectedLoginRoute>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <ProtectedLoginRoute>
+                <Login />
+              </ProtectedLoginRoute>
+            }
+          />
           <Route path="/home/*" element={<Home />} />
           <Route path="/cart" element={<Cart />} />
         </Routes>

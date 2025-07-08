@@ -19,7 +19,7 @@ function Login() {
   return (
     <div style={styles.container}>
       <form onSubmit={handleLogin} style={styles.form}>
-        <h1 style={styles.heading}>Login</h1>
+        <h1 style={styles.heading}>Login To E-commerce App</h1>
         <input
           type="text"
           placeholder="Enter your name"
@@ -47,14 +47,14 @@ const styles = {
     padding: '2rem',
     borderRadius: '8px',
     boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-    width: '300px',
+    width: '400px',
   },
   heading: {
     marginBottom: '1rem',
     textAlign: 'center',
   },
   input: {
-    width: '100%',
+    width: 'calc(100% - 1rem)',
     padding: '0.5rem',
     marginBottom: '1rem',
     border: '1px solid #ccc',

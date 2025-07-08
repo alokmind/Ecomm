@@ -155,7 +155,7 @@ function Cart() {
   return (
     <div style={styles.cartContainer}>
       <div style={styles.cartHeader}>
-        <h2>Shopping Cart ({totalQuantity} items)</h2>
+        <h2 style={styles.head}>Shopping Cart ({totalQuantity} items)</h2>
         <button onClick={handleClearCart} style={styles.clearButton}>
           Clear Cart
         </button>
@@ -344,6 +344,9 @@ const styles = {
     borderBottom: '2px solid #eee',
     paddingBottom: '1rem',
   },
+  head: {
+    margin: 0,
+  },
   clearButton: {
     backgroundColor: '#dc3545',
     color: 'white',
@@ -357,7 +360,7 @@ const styles = {
     border: '2px solid #ffc107',
     borderRadius: '8px',
     padding: '1rem',
-    marginBottom: '1rem',
+    marginBottom: '.5rem',
     textAlign: 'center',
     boxShadow: '0 4px 8px rgba(255, 193, 7, 0.3)',
   },
@@ -376,7 +379,7 @@ const styles = {
     border: '1px solid #c3e6cb',
     borderRadius: '8px',
     padding: '1rem',
-    marginBottom: '1.5rem',
+    marginBottom: '.5rem',
     textAlign: 'center',
     boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
   },
@@ -396,15 +399,15 @@ const styles = {
     color: '#666',
   },
   cartItems: {
-    marginBottom: '2rem',
+    marginBottom: '1rem',
   },
   cartItem: {
     display: 'flex',
     alignItems: 'center',
-    padding: '1.5rem',
+    padding: '.5rem',
     border: '1px solid #ddd',
     borderRadius: '8px',
-    marginBottom: '1rem',
+    marginBottom: '.5rem',
     backgroundColor: '#fff',
     boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
     minWidth: '900px',
