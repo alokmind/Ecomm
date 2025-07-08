@@ -248,6 +248,13 @@ function Cart() {
   return (
     <div style={styles.cartContainer}>
       <div style={styles.cartHeader}>
+        {/* Home Button */}
+        <button
+          onClick={() => navigate('/home')}
+          style={{ ...styles.clearButton, backgroundColor: '#007bff', marginRight: 8 }}
+        >
+          Home
+        </button>
         <h2 style={styles.head}>Shopping Cart ({totalQuantity} items)</h2>
         <button onClick={handleClearCart} style={styles.clearButton}>
           Clear Cart

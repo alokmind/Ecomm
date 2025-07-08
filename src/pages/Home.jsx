@@ -76,12 +76,21 @@ function Home() {
 
   return (
     <div style={styles.container}>
-      <div style={styles.sidebar}>
-        <div onClick={handleCategoryClick}>
-          <CategoryList />
+      {/* Sidebar: only show if not on cart or product detail */}
+      {!(isCartRoute || isProductDetailRoute) && (
+        <div style={styles.sidebar}>
+          <div onClick={handleCategoryClick}>
+            <CategoryList />
+          </div>
         </div>
-      </div>
-      <div style={styles.main}>
+      )}
+      {/* Main area: adjust width if sidebar is hidden */}
+      <div
+        style={{
+          ...styles.main,
+          width: (isCartRoute || isProductDetailRoute) ? '100%' : undefined
+        }}
+      >
         <div style={styles.topBar}>
           <div>
             <b>Welcome, {name}!</b>
@@ -113,7 +122,6 @@ function Home() {
             <Route path="/product/:productId" element={<ProductDetail />} />
           </Routes>
         </div>
-
       </div>
     </div>
   );
@@ -135,7 +143,8 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     paddingTop: '.5rem',
-    paddingRight: '0'
+    paddingRight: '0',
+    paddingLeft: '1rem',
   },
   routes: {
     height: 'calc(100vh - 78px)',

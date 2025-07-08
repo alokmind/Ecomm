@@ -121,10 +121,17 @@ function ProductDetail() {
   
   return (
     <div style={styles.container}>
-      {/* Header with back button */}
-      <div style={styles.header}>
+      {/* Header with back and home button */}
+      <div style={{ ...styles.header, display: 'flex', alignItems: 'center', gap: '1rem' }}>
         <button onClick={handleGoBack} style={styles.backButton}>
           <FontAwesomeIcon icon={faArrowLeft} /> Back
+        </button>
+        {/* Home Button (same as Cart page) */}
+        <button
+          onClick={() => navigate('/home')}
+          style={{ ...styles.backButton, backgroundColor: '#007bff' }}
+        >
+          Home
         </button>
       </div>
       
