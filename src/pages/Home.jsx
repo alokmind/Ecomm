@@ -16,7 +16,7 @@ function Home() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   const name = useSelector((state) => state.user.name);
   const { items, searchTerm } = useSelector((state) => state.products);
   const { totalQuantity } = useSelector((state) => state.cart);
@@ -105,13 +105,15 @@ function Home() {
             <button onClick={handleLogout} style={styles.logoutButton}>Logout</button>
           </div>
         </div>
+        <div style={styles.routes}>
+          <Routes>
+            <Route path="/" element={<Navigate to="/home/products" replace />} />
+            <Route path="/products" element={<ProductsView />} />
+            <Route path="/cart" element={<CartView />} />
+            <Route path="/product/:productId" element={<ProductDetail />} />
+          </Routes>
+        </div>
 
-        <Routes>
-          <Route path="/" element={<Navigate to="/home/products" replace />} />
-          <Route path="/products" element={<ProductsView />} />
-          <Route path="/cart" element={<CartView />} />
-          <Route path="/product/:productId" element={<ProductDetail />} />
-        </Routes>
       </div>
     </div>
   );
@@ -133,6 +135,12 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     paddingTop: '.5rem',
+    paddingRight: '0'
+  },
+  routes: {
+    height: 'calc(100vh - 78px)',
+    overflowY: 'auto',
+    paddingRight: '1rem',
   },
   topBar: {
     display: 'flex',
@@ -140,6 +148,7 @@ const styles = {
     alignItems: 'center',
     marginBottom: '1rem',
     gap: '1rem',
+    paddingRight: '1rem',
   },
   rightSection: {
     display: 'flex',

@@ -64,7 +64,6 @@ function ProductsView() {
                 <FontAwesomeIcon icon={['fas', 'tags']} style={styles.discountIcon} />
                 <div>
                   <div style={styles.discountPercent}>
-                    <FontAwesomeIcon icon={['fas', 'percent']} style={{ marginRight: 4 }} />
                     <b>{d.discountPercentage}% OFF</b>
                   </div>
                   <div style={styles.discountText}>
