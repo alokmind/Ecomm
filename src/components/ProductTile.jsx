@@ -3,92 +3,19 @@ import { faShoppingCart, faPlus, faMinus, faStar } from '@fortawesome/free-solid
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { addToCart, updateQuantity } from '../redux/slices/cartSlice';
-import { useEffect } from 'react';
+import './ProductTile.css';
 
 function ProductTile({ product }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const cartItems = useSelector((state) => state.cart.items);
-  
+
   const discountedPrice = product.MRP - (product.MRP * product.discountPercent) / 100;
-  
+
   // Check if product is in cart and get its quantity
   const cartItem = cartItems.find(item => item.uniqueItemId === product.uniqueItemId);
   const isInCart = !!cartItem;
   const quantity = cartItem ? cartItem.quantity : 0;
-
-  // Add CSS for hover effects when component mounts
-  useEffect(() => {
-    const styleSheet = document.createElement('style');
-    styleSheet.textContent = `
-      .product-image-container {
-        position: relative;
-        margin-bottom: 0.5rem;
-        border-radius: 4px;
-        overflow: hidden;
-        cursor: pointer;
-      }
-      
-      .product-tile-image {
-        width: 100%;
-        height: 150px;
-        object-fit: cover;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: block;
-        pointer-events: auto;
-      }
-      
-      .product-image-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(0, 123, 255, 0.85);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        border-radius: 4px;
-        pointer-events: none;
-      }
-      
-      .product-image-container:hover .product-tile-image {
-        transform: scale(1.1);
-        box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-      }
-      
-      .product-image-container:hover .product-image-overlay {
-        opacity: 1;
-      }
-      
-      .product-tile:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-      }
-      
-      .product-image-container:active .product-tile-image {
-        transform: scale(0.98);
-      }
-    `;
-    
-    // Check if style already exists to avoid duplicates
-    if (!document.querySelector('#product-tile-hover-styles')) {
-      styleSheet.id = 'product-tile-hover-styles';
-      document.head.appendChild(styleSheet);
-    }
-    
-    // Cleanup function to remove styles when component unmounts
-    return () => {
-      const existingStyle = document.querySelector('#product-tile-hover-styles');
-      if (existingStyle) {
-        existingStyle.remove();
-      }
-    };
-  }, []);
 
   const handleAddToCart = () => {
     dispatch(addToCart(product));
@@ -223,10 +150,18 @@ const styles = {
     border: '1px solid #ddd',
     borderRadius: '8px',
     padding: '1rem',
-    width: '200px',
+    flex: '1 1 220px', // grow, shrink, basis
+    maxWidth: '250px',
+    minWidth: '220px',
+    margin: '0',
     textAlign: 'center',
     boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
     transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+    background: '#fff',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   },
   overlayText: {
     color: 'white',

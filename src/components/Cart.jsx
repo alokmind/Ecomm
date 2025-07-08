@@ -334,6 +334,7 @@ const styles = {
     padding: '1rem',
     maxWidth: '1000px',
     margin: '0 auto',
+    paddingTop: '0',
   },
   cartHeader: {
     display: 'flex',

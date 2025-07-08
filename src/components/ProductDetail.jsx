@@ -218,6 +218,7 @@ const styles = {
     margin: '0 auto',
     padding: '1rem',
     backgroundColor: '#fff',
+    paddingTop: '0',
   },
   header: {
     marginBottom: '2rem',

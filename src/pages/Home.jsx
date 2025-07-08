@@ -131,6 +131,7 @@ const styles = {
     padding: '1rem',
     display: 'flex',
     flexDirection: 'column',
+    paddingTop: '.5rem',
   },
   topBar: {
     display: 'flex',
