@@ -233,7 +233,7 @@ function Cart() {
     // Clear the cart after successful checkout
     dispatch(clearCart());
 
-    alert('Checkout successful! Receipt downloaded and cart cleared.');
+    // alert('Checkout successful! Receipt downloaded and cart cleared.');
   };
 
   if (items.length === 0) {
@@ -241,6 +241,12 @@ function Cart() {
       <div style={styles.emptyCart}>
         <h2>Your Cart is Empty</h2>
         <p>Add some products to get started!</p>
+        <button
+          onClick={() => navigate('/home')}
+          style={{ ...styles.clearButton, backgroundColor: '#007bff' }}
+        >
+          Home
+        </button>
       </div>
     );
   }
