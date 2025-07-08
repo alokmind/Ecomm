@@ -3,7 +3,7 @@ import { logout } from '../redux/slices/userSlice';
 import { clearCart } from '../redux/slices/cartSlice';
 import { useNavigate, useLocation, Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { fetchProductsAndCategories, setSearchTerm, setSelectedCategoryID } from '../redux/slices/productsSlice';
+import { fetchProductsAndCategories, setSearchTerm, setSelectedCategoryID, resetProducts } from '../redux/slices/productsSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 
@@ -40,6 +40,7 @@ function Home() {
     dispatch(clearCart());
     // Clear user data
     dispatch(logout());
+    dispatch(resetProducts());
     // Navigate to login page
     navigate('/');
   };

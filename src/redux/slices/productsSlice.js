@@ -33,6 +33,10 @@ const productsSlice = createSlice({
         setSearchTerm: (state, action) => {
             state.searchTerm = action.payload;
         },
+        resetProducts: (state) => {
+            state.selectedCategoryID = 'all';
+            state.searchTerm = '';
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -51,6 +55,6 @@ const productsSlice = createSlice({
     },
 });
 
-export const { setSelectedCategoryID, setSearchTerm } = productsSlice.actions;
+export const { setSelectedCategoryID, setSearchTerm, resetProducts } = productsSlice.actions;
 
 export default productsSlice.reducer;
