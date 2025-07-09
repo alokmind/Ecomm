@@ -5,7 +5,6 @@ import { Provider, useDispatch } from 'react-redux';
 import { store } from './redux/store';
 import Login from './pages/Login';
 import Home from './pages/Home';
-import Cart from './components/Cart';
 import ProtectedLoginRoute from './components/ProtectedLoginRoute';
 
 function App() {
@@ -34,7 +33,6 @@ function App() {
             }
           />
           <Route path="/home/*" element={<Home />} />
-          <Route path="/cart" element={<Cart />} />
         </Routes>
       </Router>
     </Provider>

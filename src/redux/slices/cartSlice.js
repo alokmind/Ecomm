@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import axios from 'axios'; // <-- Add this import
 
 const loadCartFromStorage = () => {
   try {
@@ -24,9 +25,9 @@ const saveCartToStorage = (cart) => {
 // Function to load cart discounts
 const loadCartDiscounts = async () => {
   try {
-    const response = await fetch('/data/cartDiscount.json');
-    const discounts = await response.json();
-    return discounts.sort((a, b) => b.minTotalCartValue - a.minTotalCartValue); // Sort descending
+    const response = await axios.get('/data/cartDiscount.json');
+    const discounts = response.data;
+    return discounts.sort((a, b) => b.minTotalCartValue - a.minTotalCartValue);
   } catch (err) {
     console.error('Could not load cart discounts', err);
     return [];

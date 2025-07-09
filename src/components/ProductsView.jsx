@@ -32,7 +32,8 @@ function ProductsView() {
       const matchCategory =
         selectedCategoryID === 'all' || product.uniqueCategoryID === selectedCategoryID;
       const matchSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchPrice = product.MRP >= minPrice && product.MRP <= maxPrice;
+      const discountedPrice = product.MRP - (product.MRP * product.discountPercent) / 100;
+      const matchPrice = discountedPrice >= minPrice && discountedPrice <= maxPrice;
       return matchCategory && matchSearch && matchPrice;
     });
 

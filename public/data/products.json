@@ -5,7 +5,7 @@
     "image": "/assets/sampleProduct.jpg",
     "description": "Tasty and fresh bajra",
     "MRP": 485,
-    "discountPercent": 2,
+    "discountPercent": 0,
     "rating": 3.6,
     "categoryTag": "aata, rice & grains",
     "uniqueCategoryID": "c3"

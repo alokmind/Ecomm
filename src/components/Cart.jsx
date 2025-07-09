@@ -9,21 +9,22 @@ import jsPDF from 'jspdf';
 function Cart() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { 
-    items, 
-    totalQuantity, 
+  const {
+    items,
+    totalQuantity,
     originalMRPTotal,
-    subtotal, 
+    subtotal,
     productSavings,
-    cartDiscount, 
+    cartDiscount,
     totalAmount,
-    totalSavings
+    totalSavings,
+    discounts
   } = useSelector((state) => state.cart);
 
   const name = useSelector((state) => state.user.name);
   const cartItems = useSelector((state) => state.cart.items);
-  const total = useSelector((state) => state.cart.total);
-  const totalSaving = useSelector((state) => state.cart.totalSaving);
+  const minDiscount = discounts?.reduce((min, d) => d.discountPercentage < min.discountPercentage ? d : min, discounts[0]);
+  const maxDiscount = discounts?.reduce((max, d) => d.discountPercentage > max.discountPercentage ? d : max, discounts[0]);
 
   // Load discounts when component mounts
   useEffect(() => {
@@ -102,13 +103,13 @@ function Cart() {
         60% { transform: translateY(-5px); }
       }
     `;
-    
+
     // Check if style already exists to avoid duplicates
     if (!document.querySelector('#cart-hover-styles')) {
       styleSheet.id = 'cart-hover-styles';
       document.head.appendChild(styleSheet);
     }
-    
+
     // Cleanup function to remove styles when component unmounts
     return () => {
       const existingStyle = document.querySelector('#cart-hover-styles');
@@ -138,7 +139,7 @@ function Cart() {
     event.stopPropagation();
     console.log('Image clicked! Product ID:', productId);
     console.log('Navigating to:', `/home/product/${productId}`);
-    
+
     try {
       navigate(`/home/product/${productId}`);
       console.log('Navigation successful');
@@ -282,7 +283,7 @@ function Cart() {
         <div style={styles.discountBanner} className="discount-badge">
           <FontAwesomeIcon icon={faTag} style={styles.discountIcon} />
           <span style={styles.discountText}>
-            🏷️ Cart Discount Applied: {cartDiscount.percentage}% off! 
+            🏷️ Cart Discount Applied: {cartDiscount.percentage}% off!
             Saving ₹{cartDiscount.discountAmount.toFixed(2)}
           </span>
         </div>
@@ -293,13 +294,13 @@ function Cart() {
           const itemProductSaving = (item.MRP - item.discountedPrice) * item.quantity;
           return (
             <div key={item.uniqueItemId} style={styles.cartItem}>
-              <div 
+              <div
                 className="cart-image-container"
                 onClick={(e) => handleImageClick(item.uniqueItemId, e)}
               >
-                <img 
-                  src={item.image} 
-                  alt={item.name} 
+                <img
+                  src={item.image}
+                  alt={item.name}
                   className="cart-item-image"
                   onError={(e) => {
                     console.log('Image load error:', e);
@@ -310,17 +311,19 @@ function Cart() {
                   <span style={styles.overlayText}>View Details</span>
                 </div>
               </div>
-            
+
               <div style={styles.itemDetails}>
                 <h3 style={styles.itemName}>{item.name}</h3>
                 <div style={styles.priceContainer}>
                   <p style={styles.itemPrice}>₹{item.discountedPrice.toFixed(2)} each</p>
-                  <p style={styles.itemMrp}>MRP: ₹{item.MRP}</p>
                   {itemProductSaving > 0 && (
-                    <p style={styles.itemSaving}>
-                      <FontAwesomeIcon icon={faGift} style={styles.smallSavingIcon} />
-                      You save: ₹{itemProductSaving.toFixed(2)}
-                    </p>
+                    <>
+                      <p style={styles.itemMrp}>MRP: ₹{item.MRP}</p>
+                      <p style={styles.itemSaving}>
+                        <FontAwesomeIcon icon={faGift} style={styles.smallSavingIcon} />
+                        You save: ₹{itemProductSaving.toFixed(2)}
+                      </p>
+                    </>
                   )}
                 </div>
               </div>
@@ -351,7 +354,9 @@ function Cart() {
 
               <div style={styles.itemTotal}>
                 <p style={styles.totalPrice}>₹{(item.discountedPrice * item.quantity).toFixed(2)}</p>
-                <p style={styles.originalPrice}>₹{(item.MRP * item.quantity).toFixed(2)}</p>
+                {itemProductSaving > 0 && (
+                  <p style={styles.originalPrice}>₹{(item.MRP * item.quantity).toFixed(2)}</p>
+                )}
               </div>
             </div>
           );
@@ -363,12 +368,12 @@ function Cart() {
           <span style={styles.summaryLabel}>Total Items:</span>
           <span style={styles.summaryValue}>{totalQuantity}</span>
         </div>
-        
+
         <div style={styles.summaryRow}>
           <span style={styles.summaryLabel}>Original MRP Total:</span>
           <span style={styles.summaryValue}>₹{originalMRPTotal.toFixed(2)}</span>
         </div>
-        
+
         {productSavings > 0 && (
           <div style={styles.savingsRow}>
             <span style={styles.savingsLabel}>
@@ -378,12 +383,12 @@ function Cart() {
             <span style={styles.savingsValue}>-₹{productSavings.toFixed(2)}</span>
           </div>
         )}
-        
+
         <div style={styles.summaryRow}>
           <span style={styles.summaryLabel}>Subtotal:</span>
           <span style={styles.summaryValue}>₹{subtotal.toFixed(2)}</span>
         </div>
-        
+
         {cartDiscount.percentage > 0 && (
           <div style={styles.discountRow}>
             <span style={styles.discountLabel}>
@@ -393,7 +398,7 @@ function Cart() {
             <span style={styles.discountValue}>-₹{cartDiscount.discountAmount.toFixed(2)}</span>
           </div>
         )}
-        
+
         {/* Total Savings Summary */}
         {totalSavings > 0 && (
           <div style={styles.totalSavingsRow}>
@@ -404,29 +409,29 @@ function Cart() {
             <span style={styles.totalSavingsValue}>₹{totalSavings.toFixed(2)}</span>
           </div>
         )}
-        
+
         <div style={styles.finalTotalRow}>
           <span style={styles.finalTotalLabel}>Final Amount:</span>
           <span style={styles.finalTotalValue}>₹{totalAmount.toFixed(2)}</span>
         </div>
-        
+
         {/* Show next discount tier if applicable */}
-        {cartDiscount.percentage === 0 && subtotal > 0 && (
+        {cartDiscount.percentage === 0 && subtotal > 0 && discounts?.length > 0 && (
           <div style={styles.nextDiscountInfo}>
             <p style={styles.nextDiscountText}>
-              💡 Add ₹{(1000 - subtotal).toFixed(2)} more to get 5% cart discount!
+              💡 Add ₹{(minDiscount.minTotalCartValue - subtotal).toFixed(2)} more to get {minDiscount.discountPercentage}% cart discount!
             </p>
           </div>
         )}
-        
-        {cartDiscount.percentage > 0 && cartDiscount.percentage < 20 && (
+
+        {cartDiscount.percentage > 0 && cartDiscount.percentage < maxDiscount.discountPercentage && discounts?.length > 0 && (
           <div style={styles.nextDiscountInfo}>
             <p style={styles.nextDiscountText}>
-              💡 Add more items to unlock higher cart discounts (up to 20% off)!
+              💡 Add more items to unlock higher cart discounts (up to {maxDiscount.discountPercentage}% off)!
             </p>
           </div>
         )}
-        
+
         <button onClick={handleCheckout} style={styles.checkoutButton}>
           Proceed to Checkout
         </button>
